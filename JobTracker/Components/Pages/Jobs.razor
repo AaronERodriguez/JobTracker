@@ -1,0 +1,52 @@
+﻿@page "/jobs"
+@rendermode InteractiveServer
+
+@inject AppDbContext DbContext
+
+<MudText Typo="Typo.h4" Class="mb-4">My Job Applications</MudText>
+
+<MudButton Variant="Variant.Filled"
+           Color="Color.Primary"
+           Href="/add-job"
+           Class="mb-4">
+    Add Application
+</MudButton>
+
+<MudTable Items="@jobs" Hover="true" Striped="true" Bordered="true">
+    <HeaderContent>
+        <MudTh>Company</MudTh>
+        <MudTh>Role</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh>Date Applied</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Company</MudTd>
+        <MudTd>@context.Role</MudTd>
+        <MudTd>@context.Status</MudTd>
+        <MudTd>@context.DateApplied.ToShortDateString()</MudTd>
+        <MudTd>
+            <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => DeleteJob(context.ID))">Delete</MudButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<JobApplication> jobs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        jobs = await DbContext.JobApplications.ToListAsync();
+    }
+
+    private async Task DeleteJob(int id)
+    {
+        var job = await DbContext.JobApplications.FindAsync(id);
+        if (job != null)
+        {
+            DbContext.JobApplications.Remove(job);
+            await DbContext.SaveChangesAsync();
+            jobs = await DbContext.JobApplications.ToListAsync();
+        }
+    }
+}
