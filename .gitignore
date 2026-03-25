@@ -5,3 +5,18 @@ riderModule.iml
 /_ReSharper.Caches/
 
 .idea/
+
+# Database file (SQLite)
+*.db
+*.db-shm
+*.db-wal
+
+# .NET user secrets
+*.user
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
